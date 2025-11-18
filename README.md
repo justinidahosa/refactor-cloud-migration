@@ -31,40 +31,38 @@ Main components:
 
 ## Repo Layout
 
-```text
-.
-├── bootstrap-backend/                     
-│   ├── main.tf              
-│   ├── outputs.tf    
-│   ├── variables.tf
-│   └── 
-├── infrastructure/
-    ├── backend.tf
-│   ├── main.tf              # Root Terraform config
-│   ├── outputs.tf
-│   ├── terraform.tfvars
-│   ├── variables.tf    
-│   └── modules/
-        ├── acm/
-        ├── compute/
-        ├── database/
-        ├── ecr/
-        ├── migration_bucket/
-        ├── monitoring/
-        ├── network            
-        ├── route53            
-        ├── s3_uploads
-        ├── security
-├── legacy-mono/              # Legacy VM Stack
-    └── app/
-        ├── app.migrated.js   # Updated: AWS/RDS/SSL-aware entrypoint 
-        ├── app.original.js 
-        ├── Dockerfile                   
-    └── data/db
-    └── uploads
-    └── .env.legacy
-    └── app.dump
-    └── docker-compose.yml
+    .
+    ├── bootstrap-backend/
+    │   ├── main.tf
+    │   ├── outputs.tf
+    │   └── variables.tf
+    ├── infrastructure/
+    │   ├── backend.tf
+    │   ├── main.tf              # Root Terraform config
+    │   ├── outputs.tf
+    │   ├── terraform.tfvars     # Local-only (gitignored); see terraform.tfvars.example
+    │   ├── variables.tf
+    │   └── modules/
+    │       ├── acm/
+    │       ├── compute/
+    │       ├── database/
+    │       ├── ecr/
+    │       ├── migration_bucket/
+    │       ├── monitoring/
+    │       ├── network/
+    │       ├── route53/
+    │       ├── s3_uploads/
+    │       └── security/
+    └── legacy-mono/              # Legacy VM stack
+        ├── app/
+        │   ├── app.migrated.js   # Updated: AWS/RDS/SSL-aware entrypoint 
+        │   ├── app.original.js
+        │   └── Dockerfile
+        ├── data/db
+        ├── uploads
+        ├── .env.legacy
+        ├── app.dump
+        └── docker-compose.yml
 
 ## Legacy Stack (VM)
 
@@ -97,7 +95,7 @@ Seed some notes records here; they will later appear in RDS.
 
 ## Cloud Deployment (Terraform)
 
-From the infrastructure/ directory:
+From the `infrastructure/` directory:
 
     cd infrastructure
     terraform init
@@ -116,10 +114,9 @@ Terraform creates:
 
 Copy the example variables file and fill in your own values:
 
-```bash
-cd infrastructure
-cp terraform.tfvars.example terraform.tfvars
-# edit terraform.tfvars with your real AWS details
+    cd infrastructure
+    cp terraform.tfvars.example terraform.tfvars
+    # edit terraform.tfvars with your real AWS details
 
 ## Data Migration
 
@@ -165,8 +162,8 @@ After Terraform, image push, S3 upload, and CodeBuild restore:
 
 Expected:
 
-- / returns a JSON health payload like {"ok": true, ...}  
-- /notes returns the same rows that were originally created on the VM’s Postgres (now served from RDS via ECS Fargate)  
+- `/` returns a JSON health payload like `{"ok": true, ...}`  
+- `/notes` returns the same rows that were originally created on the VM’s Postgres (now served from RDS via ECS Fargate)  
 
 Optional direct verification in RDS:
 
@@ -177,4 +174,3 @@ Optional direct verification in RDS:
 - AWS: VPC, ALB, ECS Fargate, RDS (PostgreSQL), S3, CodeBuild, Secrets Manager, Route 53, ACM, CloudWatch Logs  
 - App: Node.js, Express, PostgreSQL, Multer, AWS SDK v3  
 - Infra: Terraform, Docker, Docker Compose
-
