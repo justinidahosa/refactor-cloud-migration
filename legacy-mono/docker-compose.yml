@@ -1,0 +1,19 @@
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: appuser
+      POSTGRES_PASSWORD: apppass
+      POSTGRES_DB: appdb
+    ports: ["5432:5432"]
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+
+  app:
+    build: ./app
+    env_file: .env.legacy
+    ports: ["3000:3000"]
+    depends_on: [db]
+    volumes:
+      - ./uploads:/usr/src/app/uploads
+
